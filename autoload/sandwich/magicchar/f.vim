@@ -26,7 +26,7 @@ let g:sandwich#magicchar#f#default_patterns = [
       \   },
       \ ]
 
-function! sandwich#magicchar#f#fname() abort  "{{{
+function! sandwich#magicchar#f#fname(...) abort  "{{{
   call operator#sandwich#show()
   try
     echohl MoreMsg
@@ -43,6 +43,9 @@ function! sandwich#magicchar#f#fname() abort  "{{{
   endtry
   if funcname ==# ''
     throw 'OperatorSandwichCancel'
+  endif
+  if a:0 > 0
+    return funcname . '( '
   endif
   return funcname . '('
 endfunction
@@ -223,6 +226,7 @@ function! s:search_key_bra(mode, orig_pos, bra, ket, head, tail, upper_line, low
       let bra_pos = searchpairpos(a:bra, '', a:ket, 'b', '', a:upper_line)
     endif
     let bra_pos = searchpairpos(a:bra, '', a:ket, 'b', '', a:upper_line)
+    let bra_pos = searchpos(a:bra, 'ce', bra_pos[0])
   elseif a:mode[0] ==# 'i'
     let head_start = searchpos(a:head, 'bc', a:upper_line)
     let head_end   = searchpos(a:head, 'ce', a:lower_line)
@@ -247,6 +251,7 @@ function! s:search_key_bra(mode, orig_pos, bra, ket, head, tail, upper_line, low
 
     " move to the corresponded 'bra'
     let bra_pos = searchpairpos(a:bra, '', a:ket, 'bc', '', a:upper_line)
+    let bra_pos = searchpos(a:bra, 'ce', bra_pos[0])
   endif
   return bra_pos
 endfunction
